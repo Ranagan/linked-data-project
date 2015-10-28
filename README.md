@@ -4,9 +4,11 @@
 
 ## Datasets used
 
-**Dataset 1**: Permanent private households by year built.
+**Dataset 1**: **Recorded Crime Offences** (Number) by Type of Offence, Garda Station and
+Year
 
-**Dataset 2**: Number of households with internet.
+**Dataset 2**: **Population Aged 15 Years and Over** (Number) by Sex, Highest Level of
+Education Completed, Age Group and Census Year
 
 ## General Information
 
