@@ -17,9 +17,9 @@ var db = new sqlite3.Database(':memory:');
 
 db.serialize(function() 
 {
-    db.run('CREATE TABLE crimeRates(GardaStation Text, Y2008 INTEGER, Y2009 INTEGER, Y2010 INTEGER, Y2011 INTEGER, Y2012 INTEGER, Y2013 INTEGER, Crime Text)');
+    db.run('CREATE TABLE crimes(GardaStation Text, Y2008 INTEGER, Y2009 INTEGER, Y2010 INTEGER, Y2011 INTEGER, Y2012 INTEGER, Y2013 INTEGER, Crime Text)');
     
-    var stmt = db.prepare('INSERT INTO crimeRates VALUES (?,?,?,?,?,?,?,?)');
+    var stmt = db.prepare('INSERT INTO crimes VALUES (?,?,?,?,?,?,?,?)');
     crimes.forEach(function (fill) 
     {
         stmt.run(fill.GardaStation, fill.Y2008, fill.Y2009, fill.Y2010, fill.Y2011, fill.Y2012, fill.Y2013, fill.Crime); 
@@ -54,10 +54,20 @@ app.get('/', function(req, res) {
 
 // Get method to get all crimes when /allcrimes is put at end of url
 app.get('/allcrimes', function(req, res){
-  db.all("SELECT * FROM crimeRates", function(err, row) {
+  db.all("SELECT * FROM crimes", function(err, row) {
     rowString = JSON.stringify(row, null, '\t');
     res.sendStatus(rowString);
   });
+});
+
+app.get('/allcrimes/:crimeArea', function (req, res)
+{
+    db.all("SELECT GardaStation, Crime, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013 FROM crimes WHERE GardaStation LIKE \""+req.params.crimeArea+"%\"", function(err,row)
+    {
+        var rowString = JSON.stringify(row, null, '\t');
+        res.sendStatus(rowString);
+        console.log(req.params.crimeArea);
+    });
 });
 
 // Get method to get all education data when /alleducation is put at end of url
