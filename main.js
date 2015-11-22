@@ -76,19 +76,19 @@ app.get('/alleducation', function(req, res){
 
 
 // --------------REFINED SEARCH METHODS--------------
-app.get('/allcrimes/:crimeArea', function (req, res)
+app.get('/allcrimes/get/:gs', function (req, res)
 {
     // :crimeArea is a variable, whatever the user enters there in the URL will be that variable.
     // therefore, the select statement looks for the entry where the garda station is what they entered.
-    db.all("SELECT * FROM crimes WHERE GardaStation LIKE \""+req.params.crimeArea+"%\"", function(err,row)
+    db.all("SELECT * FROM crimes WHERE GardaStation LIKE \""+req.params.gs+"%\"", function(err,row)
     {
         var rowString = JSON.stringify(row, null, '\t');
         res.sendStatus(rowString);
-        console.log(req.params.crimeArea);
+        console.log(req.params.gs);
     });
 });
 
-app.get('/alleducation/:educ', function (req, res)
+app.get('/alleducation/get/:educ', function (req, res)
 {
     db.all("SELECT * FROM educationLevel WHERE Education LIKE \"%"+req.params.educ+"%\"", function(err,row)
     {
@@ -100,7 +100,7 @@ app.get('/alleducation/:educ', function (req, res)
 
 // --------------SEARCH BY ID METHODS--------------
 
-app.get('/allcrimes/id/:crimeSearchID', function (req, res)
+app.get('/allcrimes/getbyid/id/:crimeSearchID', function (req, res)
 {
 
     db.all("SELECT * FROM crimes WHERE id="+req.params.crimeSearchID, function(err,row)
@@ -111,7 +111,7 @@ app.get('/allcrimes/id/:crimeSearchID', function (req, res)
     });
 });
 
-app.get('/alleducation/id/:eduSearchID', function (req, res)
+app.get('/alleducation/getbyid/id/:eduSearchID', function (req, res)
 {
 
     db.all("SELECT * FROM educationLevel WHERE id="+req.params.eduSearchID, function(err,row)
@@ -122,8 +122,10 @@ app.get('/alleducation/id/:eduSearchID', function (req, res)
 });
 
 // --------------DELETE BY ID METHODS--------------
+
+// Realised using app.get was wrong here so I switched it to app.delete.
 // We assigned each table entry a primary key earlier because it is the easiest way to delete an entry.
-app.get('/allcrimes/delete/:crimeID', function (req, res)
+/*app.get('/allcrimes/delete/:crimeID', function (req, res)
 {
     db.all("DELETE FROM crimes WHERE id="+req.params.crimeID, function(err,row)
     {
@@ -136,6 +138,44 @@ app.get('/alleducation/delete/:eduID', function (req, res)
     db.all("DELETE FROM educationLevel WHERE id="+req.params.eduID, function(err,row)
     {
         res.sendStatus("The education records for the Education category with ID: " +req.params.eduID+ " has been deleted.");
+    });
+});*/
+
+
+app.delete('/allcrimes/delete/:crimeDelId', function (req, res)
+{
+    db.all("DELETE FROM crimes WHERE id="+req.params.delId+"", function(err,row)
+    {
+        res.sendStatus("Crime records with ID:" + req.params.delId + " have been deleted.");
+    });
+});
+
+app.delete('/alleducation/delete/:eduDelId', function (req, res)
+{
+    db.all("DELETE FROM educationLevel WHERE id="+req.params.eduDelId+"", function(err,row)
+    {
+        res.sendStatus("Education records with ID:" + req.params.eduDelId + " have been deleted.");
+    });
+});
+
+
+// --------------POST METHODS--------------
+app.post('/allcrimes/add/:crime/:gardastation/:year/:amt', function (req, res)
+{
+    // Inserts a new crime record into the database with the values supplied by the user.
+    // Each catagory is fairly self explanatory, so it's easy for the user to understand what to do.
+    db.all("INSERT INTO crimes(Crime , GardaStation , Y"+req.params.year+") VALUES (\""+req.params.crime+"\" , \""+req.params.gardastation+"\" , "+req.params.amt+")", function(err,row)
+    {
+        res.sendStatus("New crime entry has been added to the crimes table.");
+    });
+});
+
+// Not working properly yet.
+app.post('/alleducation/add/:educationCat/:age/:eduAmt', function (req, res)
+{
+    db.all("INSERT INTO educationLevel(Education, "+req.params.age+"Years) VALUES (\""+req.params.educationCat+"\", "+req.params.amt+")", function(err,row)
+    {
+        res.sendStatus("New education entry has been added to the education table.");
     });
 });
 
