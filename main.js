@@ -100,7 +100,7 @@ app.get('/alleducation/get/:educ', function (req, res)
 
 // --------------SEARCH BY ID METHODS--------------
 
-app.get('/allcrimes/getbyid/id/:crimeSearchID', function (req, res)
+app.get('/allcrimes/getbyid/:crimeSearchID', function (req, res)
 {
 
     db.all("SELECT * FROM crimes WHERE id="+req.params.crimeSearchID, function(err,row)
@@ -111,7 +111,7 @@ app.get('/allcrimes/getbyid/id/:crimeSearchID', function (req, res)
     });
 });
 
-app.get('/alleducation/getbyid/id/:eduSearchID', function (req, res)
+app.get('/alleducation/getbyid/:eduSearchID', function (req, res)
 {
 
     db.all("SELECT * FROM educationLevel WHERE id="+req.params.eduSearchID, function(err,row)
@@ -164,18 +164,36 @@ app.post('/allcrimes/add/:crime/:gardastation/:year/:amt', function (req, res)
 {
     // Inserts a new crime record into the database with the values supplied by the user.
     // Each catagory is fairly self explanatory, so it's easy for the user to understand what to do.
-    db.all("INSERT INTO crimes(Crime , GardaStation , Y"+req.params.year+") VALUES (\""+req.params.crime+"\" , \""+req.params.gardastation+"\" , "+req.params.amt+")", function(err,row)
+    db.all("INSERT INTO crimes(Crime , GardaStation , Y"+req.params.year+") VALUES (\""+req.params.crime+"\", \""+req.params.gardastation+"\", "+req.params.amt+")", function(err,row)
     {
         res.sendStatus("New crime entry has been added to the crimes table.");
     });
 });
 
-// Not working properly yet.
 app.post('/alleducation/add/:educationCat/:age/:eduAmt', function (req, res)
 {
-    db.all("INSERT INTO educationLevel(Education, "+req.params.age+"Years) VALUES (\""+req.params.educationCat+"\", "+req.params.amt+")", function(err,row)
+    db.all("INSERT INTO educationLevel(Education, "+req.params.age+"Years) VALUES (\""+req.params.educationCat+"\", "+req.params.eduAmt+")", function(err,row)
     {
         res.sendStatus("New education entry has been added to the education table.");
+    });
+});
+
+// --------------PUT METHODS--------------
+// Update URL should be self explanatory, for help using it, check the README.md
+app.put('/allcrimes/update/:id/:crimeYear/:crimeAmount', function (req, res)
+{
+    db.all("UPDATE crimes SET Y"+req.params.crimeYear+" = "+req.params.crimeAmount+"  WHERE id="+req.params.id+"", function(err,row)
+    {
+        res.sendStatus("Crime record with ID " + req.params.id + " has been updated with new values.");
+    });
+});
+
+
+app.put('/alleducation/update/:id/:eduAge/:eduAmount', function (req, res)
+{
+    db.all("UPDATE educationLevel SET a"+req.params.eduAge+"Years = "+req.params.eduAmount+"  WHERE id="+req.params.id+"", function(err,row)
+    {
+        res.sendStatus("Education entry with ID " + req.params.id + " has been updated with new values.");
     });
 });
 
