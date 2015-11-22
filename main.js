@@ -6,6 +6,8 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 
 var app = express();
+
+// Browsers can't read JSON files so this parses the JSON files so it can be read.
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true}));
 
@@ -17,8 +19,7 @@ var db = new sqlite3.Database(':memory:');
 
 db.serialize(function() 
 {
-    //Defines the database and automatically adds a primary key to
-    // each of the entries.
+    //Defines the database tables and automatically adds a primary key to each of the entries.
     
     db.run('CREATE TABLE crimes(id INTEGER PRIMARY KEY AUTOINCREMENT, GardaStation Text, Y2008 INTEGER, Y2009 INTEGER, Y2010 INTEGER, Y2011 INTEGER, Y2012 INTEGER, Y2013 INTEGER, Crime Text)');
     
@@ -52,28 +53,17 @@ db.serialize(function()
 
 //When a user goes to /, return a small help string
 app.get('/', function(req, res) {
-    res.send("This is the api working, apparently.");
+    res.send("Use /allcrimes to retreive all crime records. \n Use /alleducation to retreive all education records from 2011.");
     console.log("Port 8000: This is working!?");
 });
 
+// --------------GET ALL METHODS--------------
 // Get method to get all crimes when /allcrimes is put at the end of the URL
 app.get('/allcrimes', function(req, res){
   db.all("SELECT * FROM crimes", function(err, row) {
     rowString = JSON.stringify(row, null, '\t');
     res.sendStatus(rowString);
   });
-});
-
-app.get('/allcrimes/:crimeArea', function (req, res)
-{
-    // :crimeArea is a variable, whatever the user enters there in the URL will be that variable.
-    // therefore, the select statement looks for the entry where the garda station is what they entered.
-    db.all("SELECT GardaStation, Crime, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013 FROM crimes WHERE GardaStation LIKE \""+req.params.crimeArea+"%\"", function(err,row)
-    {
-        var rowString = JSON.stringify(row, null, '\t');
-        res.sendStatus(rowString);
-        console.log(req.params.crimeArea);
-    });
 });
 
 // Get method to get all education data when /alleducation is put at the end of the URL
@@ -83,6 +73,72 @@ app.get('/alleducation', function(req, res){
     res.sendStatus(rowString);
   });
 });
+
+
+// --------------REFINED SEARCH METHODS--------------
+app.get('/allcrimes/:crimeArea', function (req, res)
+{
+    // :crimeArea is a variable, whatever the user enters there in the URL will be that variable.
+    // therefore, the select statement looks for the entry where the garda station is what they entered.
+    db.all("SELECT * FROM crimes WHERE GardaStation LIKE \""+req.params.crimeArea+"%\"", function(err,row)
+    {
+        var rowString = JSON.stringify(row, null, '\t');
+        res.sendStatus(rowString);
+        console.log(req.params.crimeArea);
+    });
+});
+
+app.get('/alleducation/:educ', function (req, res)
+{
+    db.all("SELECT * FROM educationLevel WHERE Education LIKE \"%"+req.params.educ+"%\"", function(err,row)
+    {
+        var rowString = JSON.stringify(row, null, '\t');
+        res.sendStatus(rowString);
+        console.log(req.params.educ);
+    });
+});
+
+// --------------SEARCH BY ID METHODS--------------
+
+app.get('/allcrimes/id/:crimeSearchID', function (req, res)
+{
+
+    db.all("SELECT * FROM crimes WHERE id="+req.params.crimeSearchID, function(err,row)
+    {
+        var rowString = JSON.stringify(row, null, '\t');
+        res.sendStatus(rowString);
+        console.log(req.params.crimeSearchID);
+    });
+});
+
+app.get('/alleducation/id/:eduSearchID', function (req, res)
+{
+
+    db.all("SELECT * FROM educationLevel WHERE id="+req.params.eduSearchID, function(err,row)
+    {
+        var rowString = JSON.stringify(row, null, '\t');
+        res.sendStatus(rowString);
+    });
+});
+
+// --------------DELETE BY ID METHODS--------------
+// We assigned each table entry a primary key earlier because it is the easiest way to delete an entry.
+app.get('/allcrimes/delete/:crimeID', function (req, res)
+{
+    db.all("DELETE FROM crimes WHERE id="+req.params.crimeID, function(err,row)
+    {
+        res.sendStatus("The crime records for the Garda Station with ID: " +req.params.crimeID+ " has been deleted.");
+    });
+});
+
+app.get('/alleducation/delete/:eduID', function (req, res)
+{
+    db.all("DELETE FROM educationLevel WHERE id="+req.params.eduID, function(err,row)
+    {
+        res.sendStatus("The education records for the Education category with ID: " +req.params.eduID+ " has been deleted.");
+    });
+});
+
 
 //Start the server
 var server = app.listen(8000);
