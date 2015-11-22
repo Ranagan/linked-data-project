@@ -14,3 +14,4 @@ Education Completed, Age Group and Census Year - Converted into JSON by myself.
   This API uses **Express** with **Node.js** to query an **SQLite3** database consisting of two different datasets.
   
   The code currently contains methods for **searching** each database table and **deleting** an entry in the database.
+
