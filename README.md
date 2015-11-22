@@ -1,16 +1,16 @@
-# linked-data-project
-**By Ryan Flanagan**
-
+#Ryan Flanagan
+**Final year Semantic Web and Linked Data project**
 
 ## Datasets used
 
 **Dataset 1**: **Recorded Crime Offences** (Number) by Type of Offence, Garda Station and
-Year
+Year - Converted into JSON by Eoghan Moylan
 
 **Dataset 2**: **Population Aged 15 Years and Over** (Number) by Sex, Highest Level of
-Education Completed, Age Group and Census Year
+Education Completed, Age Group and Census Year - Converted into JSON by myself.
 
 ## General Information
 
-I am hoping to use a NEO4J graph database and create an API to query it. More research needs to be done on this however. As I progress through this project the README will be updated with more information on the project and how it works. The README will contain basic information on how to query the API and examples of using the API in general. 
-
+  This API uses **Express** with **Node.js** to query an **SQLite3** database consisting of two different datasets.
+  
+  The code currently contains methods for **searching** each database table and **deleting** an entry in the database.
