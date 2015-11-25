@@ -100,10 +100,12 @@ app.put('/allcrimes/update/:id/:crimeYear/:crimeAmount', function (req, res)
 ```
 
 ## References
-- Datasets from [CSO Statbank](http://www.cso.ie/px/pxeirestat/statire/SelectTable/Omrade0.asp?Planguage=0)
-- Used to test REST [HttpRequester](https://addons.mozilla.org/en-us/firefox/addon/httprequester/)
-- Help with Express [NPM](https://www.npmjs.com/package/express)
-- Great SQL Tutorials on [Tutorials Point](http://www.tutorialspoint.com/sql/)
+- Datasets from [CSO Statbank](http://www.cso.ie/px/pxeirestat/statire/SelectTable/Omrade0.asp?Planguage=0).
+- Used to test REST [HttpRequester](https://addons.mozilla.org/en-us/firefox/addon/httprequester/).
+- Help with Express [NPM](https://www.npmjs.com/package/express).
+- Great SQL Tutorials on [Tutorials Point](http://www.tutorialspoint.com/sql/).
+- Adapted code from [SQLite3](https://www.npmjs.com/package/sqlite3). Also shows you how to install SQLite3 using NPM.
+- Package manager for Node.js, [NPM](https://www.npmjs.com/).
 
 
   
